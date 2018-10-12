@@ -30,7 +30,8 @@ def gcd(x, y):
         if x % i == 0 and y % i == 0:
             return i
 
-print(gcd(3012121212, 1212121212))
+
+print(gcd(301212121, 121212121))
 # 上面中间写上代码块
 end = time.time()
 print('Running time: %s Seconds' % (end - start))

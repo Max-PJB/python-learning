@@ -35,6 +35,7 @@ class ResIterator(int):
     def __iter__(self):
         return self
 
+
 result = ResIterator(n)
 print(n, "=", "*".join(map(str, result)))
 # 上面中间写上代码块

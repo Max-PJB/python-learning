@@ -58,6 +58,7 @@ class FibIterator(object):
     def __iter__(self):
         return self
 
+
 fib = FibIterator(20)
 print(next(fib))
 li = list(fib)
@@ -78,7 +79,7 @@ for i in member.split(','):
 
 # 请在此添加代码，将List转换为迭代器的代码
 # ********** Begin *********#
-class my_iterator(object):
+class MyIterator(object):
     def __init__(self, obj):
         self.List = obj
         self.i = 0
@@ -95,16 +96,19 @@ class my_iterator(object):
     def __iter__(self):
         return self
 
-hehe = my_iterator(List)
+
+hehe = MyIterator(List)
 print(list(hehe))
+hehe2 = MyIterator(List)
+
 # ********** End **********#
 while True:
     try:
         # 请在此添加代码，用next()函数遍历IterList的代码
         # ********** Begin *********#
-        num = next(hehe)
+        num = hehe2.__next__()
         # ********** End **********#
         result = int(num) * 2
-        print(result)
+        print("ssss", result)
     except StopIteration:
         break

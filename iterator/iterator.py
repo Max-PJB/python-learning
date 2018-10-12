@@ -9,6 +9,8 @@
     @   Site    :       
 -------------------------------------------------
 """
+from collections import Iterable
+from collections import Iterator
 
 __author__ = 'Max_Pengjb'
 
@@ -26,7 +28,6 @@ __author__ = 'Max_Pengjb'
 可直接作用于for循环的数据类型如:list、tuple、dict等统称为可迭代对象:Iterable。可以使用方法isinsteance()判断一个对象是否是可迭代对象。
 例如: isinstance(obj, Iterable)  判断是不是迭代对象
 """
-from collections import Iterable
 
 result = isinstance([], Iterable)
 print(result)
@@ -54,7 +55,6 @@ The only reliable way to determine whether an object is iterable is to call iter
 可以被next()函数调用并不断返回下一个值的对象称为迭代器:Iterator。next()函数访问每一个对象，直到对象访问完毕返回一个StopIteration异常。
 例如: isinstance(obj, Iterator)  判断是不是迭代器
 """
-from collections import Iterator
 
 result = isinstance([], Iterator)
 print(result)

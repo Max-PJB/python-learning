@@ -22,7 +22,7 @@ jerryscore = int(input())
 dict1 = {}
 dict1['jim'] = jimscore
 dict1['jerry'] = jerryscore
-x = 3
+x = jimscore if jimscore > jerryscore else jerryscore
 print(isinstance(dict1.values(), collections.Iterable))
 print(isinstance(dict1.values(), collections.Iterator))
 print(isinstance(iter(dict1.values()), collections.Iterator))

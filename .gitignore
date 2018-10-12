@@ -3,9 +3,14 @@
 ### Example user template
 
 # IntelliJ project files
+idea
+idea/*
 .idea
+.idea/*
 *.iml
 out
 gen
 .idea/workspace.xml
 .gitignore
+venv
+venv/*
