@@ -6,6 +6,8 @@
 
 .idea
 .idea/*
+.idea/misc.xml
+.idea/python-learning.iml
 *.iml
 out
 gen
