@@ -9,7 +9,7 @@
     @   GitHub  :       https://github.com/JackyPJB
     @   Contact :       pengjianbiao@hotmail.com
 -------------------------------------------------
-    Description :       
+    Description :       进程和线程的区别
 -------------------------------------------------
 """
 import math
