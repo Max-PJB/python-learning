@@ -3,8 +3,7 @@
 ### Example user template
 
 # IntelliJ project files
-idea
-idea/*
+
 .idea
 .idea/*
 *.iml
