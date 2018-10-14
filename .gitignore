@@ -12,3 +12,4 @@ gen
 .idea/workspace.xml
 venv
 venv/*
+.gitignore
