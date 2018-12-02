@@ -13,6 +13,7 @@
 -------------------------------------------------
 """
 import time
+import math
 
 __author__ = 'Max_Pengjb'
 start = time.time()
@@ -55,65 +56,35 @@ def prime_numbers_below2(x):
     return prime_table
 
 
+"""
+判断一个正整数是不是素数（快速方法）：
+质数有一个特点，就是它总是等于 6x-1 或者 6x+1，其中 x 是大于等于1的自然数。
+
+如何论证这个结论呢，其实不难。
+首先 6x 肯定不是质数，因为它能被 6 整除；
+其次 6x+2 肯定也不是质数，因为它还能被2整除；
+依次类推，6x+3 肯定能被 3 整除；6x+4 肯定能被 2 整除。
+那么，就只有 6x+1 和 6x+5 (即等同于6x-1) 可能是质数了。
+所以循环的步长可以设为 6，然后每次只判断 6 两侧的数即可。
+"""
+
+
+def is_prime(x):
+    if x < 2:
+        return False
+    elif x <= 3:
+        return True
+    k = x % 6
+    if k != 1 and k != 5:
+        return False
+    sqrt_x = int(math.sqrt(x))
+    for i in range(5, sqrt_x + 1, 6):
+        if x % i == 0 or x % (i + 2) == 0:
+            return False
+    return True
 # print(prime_numbers_below1(9999999))
 print(prime_numbers_below2(999))
 
 # 上面中间写上代码块
 end = time.time()
 print('Running time: %s Seconds' % (end - start))
-
-
-def solve(x):
-    '''
-    :type x: int
-    :rtype : Boolean
-    '''
-    # 请在此添加代码，实现判断一个数是否是素数
-    # ********** Begin *********#
-
-    ll = [0 for _ in range(x + 1)]
-    print(ll)
-
-    for i in range(2, x + 1):
-        if ll[i] == 0:
-            for j in range(i * 2, x + 1, i):
-                ll[j] = 1
-    print(ll)
-    if ll[x] == 1:
-        print(ll[x])
-        return False
-    else:
-        print(ll[x])
-        return True
-
-
-solve(6)
-
-
-def solve2(x):
-    '''
-    :type x: int
-    :rtype : None
-    '''
-    # 请在此添加代码，实现打印前x行乘法表的内容
-    # ********** Begin *********#
-    for i in range(1, x + 1):
-        for j in range(i, 9):
-            print("{}*{}={:>3} ".format(i, j, i * j), end='')
-        print("{}*{}={:>3}".format(i, 9, i * 9))
-
-solve2(9)
-
-
-def solve3(op, num_1, num_2):
-    if op == '+':
-        re = num_1 + num_2
-    elif op == '-':
-        re = num_1 - num_2
-    elif op == '*':
-        re = num_1 * num_2
-    else:
-        re = num_1 / num_2
-    return "{:.2f}".format(re)
-
-print(solve3('+',1,1))
