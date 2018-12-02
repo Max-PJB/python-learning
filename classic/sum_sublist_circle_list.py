@@ -24,7 +24,7 @@
 -------------------------------------------------
 """
 import time
-from summary import sum_subList_2_ways
+from classic import sum_subList_2_ways
 
 __author__ = 'Max_Pengjb'
 start = time.time()
