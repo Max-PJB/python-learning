@@ -136,9 +136,7 @@ class Solution(object):
         """
 
         def is_prime(x):
-            if x < 2:
-                return False
-            elif x <= 3:
+            if x <= 3:
                 return True
             k = x % 6
             if k != 1 and k != 5:
@@ -149,7 +147,7 @@ class Solution(object):
                     return False
             return True
 
-        # 生成下一个大于 回文数x 的回文数
+        # 生成大于 x 的回文数
         def next_palin(x):
             """
             :param x:int
@@ -187,7 +185,7 @@ class Solution(object):
             N = next_palin(N)
 
 
-res = Solution().primePalindrome(99999999)
+res = Solution().primePalindrome(8967943757)
 print(res)
 # 上面中间写上代码块
 end = time.time()
