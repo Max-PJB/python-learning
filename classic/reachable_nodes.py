@@ -136,6 +136,7 @@ class Solution(object):
 
         while pq:
             d, node = heapq.heappop(pq)
+            print(d,node)
             if d > dist[node]: continue
             # Each node is only visited once.  We've reached
             # a node in our original graph.
