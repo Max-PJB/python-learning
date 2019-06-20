@@ -22,6 +22,7 @@ __author__ = 'Max_Pengjb'
 def run(n):
     global num
     num += 1
+    print(num)
 
 
 num = 0
@@ -32,6 +33,7 @@ for i in range(20000):
     t_obj.append(t)
 for t in t_obj:
     t.join()
+    pass
 print("num:", num)
 """
 产生脏数据后的运行结果：

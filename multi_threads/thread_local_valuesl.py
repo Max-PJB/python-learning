@@ -104,12 +104,18 @@ Thread-local 对象
 data = threading.local()
 
 
+def show():
+    print(threading.current_thread().getName(), data.num)
+
+
 def action():
     global x
     data.num = x
     for i in range(1000000):
         data.num += 1
+        show()
         data.num -= 1
+
     x = data.num
 
 
