@@ -33,10 +33,23 @@ start_time = time.time()
 # 下面写上代码块
 class Solution:
     def maximumSum(self, arr: List[int]) -> int:
+        # 动态规划，ap[i] 表示以i结尾的没有删除元素的最大子数组 dp[i] 表示以 i 结尾的删了一个元素的最大子数组
+        # 那么  ap[i+1] = arr[i] if ap[i] < 0 else ap[i]+arr[i+1]
+        #       dp[i+1] = max(ap[i] ， dp[i-1]+arr[i+1])  #删除过的dp[i]加上本身 和 没有删除过的ap[i]删除arr[i+1] 取大值
+        ap_pre = arr[0]
+        dp_pre = 0
+        big = ap_pre
+        for i in range(1, len(arr)):
+            ap = max(arr[i], ap_pre + arr[i])
+            dp = max(ap_pre, dp_pre + arr[i])
+            ap_pre, dp_pre = ap, dp
+            big = max(big, ap, dp)
+        return big
 
-        pass
 
-
+arr = [1,-2,-2,3]
+res = Solution().maximumSum(arr)
+print(res)
 # 上面中间写上代码块
 end_time = time.time()
 print('Running time: %s Seconds' % (end_time - start_time))

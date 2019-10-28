@@ -39,6 +39,7 @@ def prime_numbers_below1(x):
 
 
 # 欧拉筛法，这里只给出其代码实现，希望大家能仔细去体会。
+# https://blog.csdn.net/u012102306/article/details/71407105
 def prime_numbers_below2(x):
     vis = [0 for i in range(x + 1)]
     prime_table = []
@@ -83,7 +84,7 @@ def is_prime(x):
             return False
     return True
 # print(prime_numbers_below1(9999999))
-print(prime_numbers_below2(999))
+print(prime_numbers_below2(9999999))
 
 # 上面中间写上代码块
 end = time.time()
