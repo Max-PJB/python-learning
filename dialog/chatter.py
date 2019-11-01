@@ -53,6 +53,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+# 别人的数据库设计文件
+# https://macrozheng.github.io/mall-learning/#/database/mall_database_overview
 app = Flask(__name__)
 CORS(app, resources={r"*": {"origin": "*"}})
 
@@ -276,22 +278,23 @@ def home():
 @app.route("/goods/navList")
 def nav_list():
     return jsonify({"success": True, "message": "success", "code": 200, "timestamp": 1572182342706, "result": [
-        {"id": 67, "panelId": 0, "type": 1, "productId": None, "sortOrder": 1,
+        {"id": 67, "panelId": 0, "type": "健康监测", "productId": None, "sortOrder": 1,
          "fullUrl": "http://xmall.exrick.cn/#/goods?cid=1184", "picUrl": "健康监测", "picUrl2": None, "picUrl3": None,
          "created": 1569839447000, "updated": 1569839447000, "salePrice": None, "productName": None, "subTitle": None,
          "productImageBig": "健康监测"},
-        {"id": 58, "panelId": 0, "type": 1, "productId": None, "sortOrder": 2,
+        {"id": 58, "panelId": 0, "type": "健康食品", "productId": None, "sortOrder": 2,
          "fullUrl": "http://xmall.exrick.cn/#/thanks", "picUrl": "健康食品", "picUrl2": None,
          "picUrl3": None, "created": 1532695807000, "updated": 1532701518000,
          "salePrice": None, "productName": None, "subTitle": None,
          "productImageBig": "健康食品"},
-        {"id": 59, "panelId": 0, "type": 0, "productId": None, "sortOrder": 3, "fullUrl": "http://xmadmin.exrick.cn",
+        {"id": 59, "panelId": 0, "type": "健康用品", "productId": None, "sortOrder": 3,
+         "fullUrl": "http://xmadmin.exrick.cn",
          "picUrl": "健康用品", "picUrl2": None, "picUrl3": None, "created": 1532701544000, "updated": 1532701614000,
          "salePrice": None, "productName": None, "subTitle": None, "productImageBig": "健康用品"},
-        {"id": 68, "panelId": 0, "type": 0, "productId": None, "sortOrder": 4, "fullUrl": "http://xpay.exrick.cn",
+        {"id": 68, "panelId": 0, "type": "体育用品", "productId": None, "sortOrder": 4, "fullUrl": "http://xpay.exrick.cn",
          "picUrl": "体育用品", "picUrl2": None, "picUrl3": None, "created": 1569839494000, "updated": 1569839494000,
          "salePrice": None, "productName": None, "subTitle": None, "productImageBig": "体育用品"},
-        {"id": 61, "panelId": 0, "type": 0, "productId": None, "sortOrder": 5,
+        {"id": 61, "panelId": 0, "type": "健康服务", "productId": None, "sortOrder": 5,
          "fullUrl": "https://github.com/Exrick/x-boot", "picUrl": "健康服务", "picUrl2": None, "picUrl3": None,
          "created": 1532701581000, "updated": 1541324408000, "salePrice": None, "productName": None, "subTitle": None,
          "productImageBig": "健康服务"}
@@ -302,68 +305,115 @@ def nav_list():
 # 这里要做一个分页，接受参数，然后返回分页后的结果
 @app.route("/goods/allGoods")
 def all_goods():
-    return jsonify({"success": True, "message": "success", "code": 200, "timestamp": 1572446419191,
-                    "result": {"total": 32, "data": [
-                        {"productId": 150642571432852, "salePrice": 499.00, "productName": "FIIL Driifter 脖挂蓝牙耳机",
-                         "subTitle": "全天佩戴 抬手就听 HEAC稳连技术",
-                         "productImageBig": "https://resource.smartisan.com/resource/367d93db1d58f9f3505bc0ec18efaa44.jpg"},
-                        {"productId": 150642571432851, "salePrice": 2699.00, "productName": "优点智能 E1 推拉式智能指纹密码锁",
-                         "subTitle": "推拉一下，轻松开关",
-                         "productImageBig": "https://resource.smartisan.com/resource/7ac3af5a92ad791c2b38bfe1e38ee334.jpg"},
-                        {"productId": 150642571432850, "salePrice": 199.00, "productName": "ACIL E1 颈挂式蓝牙耳机",
-                         "subTitle": "无感佩戴，一切变得简单",
-                         "productImageBig": "https://resource.smartisan.com/resource/406eddef8808fa5a9be9594d07ef8643.jpg"},
-                        {"productId": 150642571432849, "salePrice": 9.90, "productName": "Smartisan 明信片",
-                         "subTitle": "优质卡纸、包装精致、色彩饱满",
-                         "productImageBig": "https://resource.smartisan.com/resource/3973d009d182d8023bea6250b9a3959e.jpg"},
-                        {"productId": 150642571432848, "salePrice": 199.00, "productName": "Smartisan 牛津纺衬衫",
-                         "subTitle": "一件无拘无束的舒适衬衫",
-                         "productImageBig": "https://resource.smartisan.com/resource/a1c53b5f12dd7ef790cadec0eaeaf466.jpg"},
-                        {"productId": 150642571432847, "salePrice": 249.00, "productName": "Smartisan Polo衫 经典款",
-                         "subTitle": "一件表里如一的舒适 POLO 衫",
-                         "productImageBig": "https://resource.smartisan.com/resource/daa975651d6d700c0f886718c520ee19.jpg"},
-                        {"productId": 150642571432846, "salePrice": 149.00, "productName": "Smartisan T恤 任天堂发售“红白机”",
-                         "subTitle": "100% 美国 SUPIMA 棉、舒适拉绒质地",
-                         "productImageBig": "https://resource.smartisan.com/resource/804edf579887b3e1fae4e20a379be5b5.png"},
-                        {"productId": 150642571432845, "salePrice": 199.00, "productName": "Smartisan 帆布鞋",
-                         "subTitle": "一双踏实、舒适的帆布鞋",
-                         "productImageBig": "https://resource.smartisan.com/resource/2f9a0f5f3dedf0ed813622003f1b287b.jpg"},
-                        {"productId": 150642571432844, "salePrice": 2999.00, "productName": "畅呼吸智能空气净化器超级除甲醛版",
-                         "subTitle": "购新空净 赠价值 699 元活性炭滤芯",
-                         "productImageBig": "https://resource.smartisan.com/resource/71432ad30288fb860a4389881069b874.png"},
-                        {"productId": 150642571432843, "salePrice": 1999.00, "productName": "坚果 3",
-                         "subTitle": "漂亮得不像实力派",
-                         "productImageBig": "https://resource.smartisan.com/resource/718bcecced0df1cd23bbdb9cc1f70b7d.png"},
-                        {"productId": 150642571432842, "salePrice": 79.00, "productName": "坚果 3 \"足迹\"背贴 乐高创始人出生",
-                         "subTitle": "1891 年 4 月 7 日",
-                         "productImageBig": "https://resource.smartisan.com/resource/abb6986430536cd9365352b434f3c568.jpg"},
-                        {"productId": 150642571432841, "salePrice": 49.00, "productName": "坚果 3 TPU 软胶保护套",
-                         "subTitle": "TPU 环保材质、完美贴合、周到防护",
-                         "productImageBig": "https://resource.smartisan.com/resource/b899d9b82c4bc2710492a26af021d484.jpg"},
-                        {"productId": 150642571432840, "salePrice": 89.00, "productName": "Smartisan 半入耳式耳机",
-                         "subTitle": "经典配色、专业调音、高品质麦克风",
-                         "productImageBig": "https://resource.smartisan.com/resource/9c1d958f10a811df841298d50e1ca7c0.jpg"},
-                        {"productId": 150642571432839, "salePrice": 29.00, "productName": "坚果 3 TPU 软胶透明保护套",
-                         "subTitle": "轻薄透明、完美贴合、TPU 环保材质",
-                         "productImageBig": "https://resource.smartisan.com/resource/5e4b1feddb13639550849f12f6b2e202.jpg"},
-                        {"productId": 150642571432838, "salePrice": 79.00, "productName": "坚果 3 绒布国旗保护套",
-                         "subTitle": "质感精良、完美贴合、周到防护",
-                         "productImageBig": "https://resource.smartisan.com/resource/63ea40e5c64db1c6b1d480c48fe01272.jpg"},
-                        {"productId": 150642571432837, "salePrice": 49.00, "productName": "坚果 3 前屏钢化玻璃保护膜",
-                         "subTitle": "超强透光率、耐刮花、防指纹",
-                         "productImageBig": "https://resource.smartisan.com/resource/3a7522290397a9444d7355298248f197.jpg"},
-                        {"productId": 150642571432836, "salePrice": 149.00, "productName": "Smartisan T恤 伍迪·艾伦出生",
-                         "subTitle": "一件内外兼修的舒适T恤",
-                         "productImageBig": "https://resource.smartisan.com/resource/f96f0879768bc317b74e7cf9e3d96884.jpg"},
-                        {"productId": 816448, "salePrice": 2799.00, "productName": "极米无屏电视 CC",
-                         "subTitle": "720P 高清分辨率、JBL 音响、两万毫安续航力",
-                         "productImageBig": "http://image.smartisanos.cn/resource/41cb562a47d4831e199ed7e2057f3b61.jpg"},
-                        {"productId": 738388, "salePrice": 39.00, "productName": "Smartisan 原装 Type-C 数据线",
-                         "subTitle": "PTC 过温保护、凹形设计、TPE 环保材质",
-                         "productImageBig": "http://image.smartisanos.cn/resource/c79a73ffc6f8e782160d978f49f543dc.jpg"},
-                        {"productId": 691300, "salePrice": 199.00, "productName": "Smartisan 快充移动电源 10000mAh",
-                         "subTitle": "10000mAh 双向快充、轻盈便携、高标准安全保护",
-                         "productImageBig": "http://image.smartisanos.cn/resource/0540778097a009364f2dcbb8c5286451.jpg"}]}})
+    # 如果带了 type 分类信息，就返回不同的分类给他
+    print(request.args)
+
+    if request.args.get("type") in ["健康服务", "体育用品", "健康用品"]:
+        return jsonify({"success": True, "message": "success", "code": 200, "timestamp": 1572505215697,
+                        "result": {"total": 1, "data": [
+                            {"productId": 150642571432849, "salePrice": 9.90, "productName": "Smartisan 明信片",
+                             "subTitle": "优质卡纸、包装精致、色彩饱满",
+                             "productImageBig": "https://resource.smartisan.com/resource/3973d009d182d8023bea6250b9a3959e.jpg"},
+                            {"productId": 150642571432847, "salePrice": 249.00, "productName": "Smartisan Polo衫 经典款",
+                             "subTitle": "一件表里如一的舒适 POLO 衫",
+                             "productImageBig": "https://resource.smartisan.com/resource/daa975651d6d700c0f886718c520ee19.jpg"}
+                        ]}})
+    elif request.args.get("type") in ["健康监测", "健康食品"]:
+        return jsonify({"success": True, "message": "success", "code": 200, "timestamp": 1572505215697,
+                        "result": {"total": 1, "data": [
+                            {"productId": 150642571432848, "salePrice": 199.00, "productName": "Smartisan 牛津纺衬衫",
+                             "subTitle": "一件无拘无束的舒适衬衫",
+                             "productImageBig": "https://resource.smartisan.com/resource/a1c53b5f12dd7ef790cadec0eaeaf466.jpg"},
+                            {"productId": 150642571432846, "salePrice": 149.00,
+                             "productName": "Smartisan T恤 任天堂发售“红白机”", "subTitle": "100% 美国 SUPIMA 棉、舒适拉绒质地",
+                             "productImageBig": "https://resource.smartisan.com/resource/804edf579887b3e1fae4e20a379be5b5.png"},
+                            {"productId": 150642571432845, "salePrice": 199.00, "productName": "Smartisan 帆布鞋",
+                             "subTitle": "一双踏实、舒适的帆布鞋",
+                             "productImageBig": "https://resource.smartisan.com/resource/2f9a0f5f3dedf0ed813622003f1b287b.jpg"},
+                            {"productId": 150642571432836, "salePrice": 149.00, "productName": "Smartisan T恤 伍迪·艾伦出生",
+                             "subTitle": "一件内外兼修的舒适T恤",
+                             "productImageBig": "https://resource.smartisan.com/resource/f96f0879768bc317b74e7cf9e3d96884.jpg"}]}})
+    else:
+        return jsonify({"success": True, "message": "success", "code": 200, "timestamp": 1572446419191,
+                        "result": {"total": 32, "data": [
+                            {"productId": 150642571432852, "salePrice": 499.00, "productName": "FIIL Driifter 脖挂蓝牙耳机",
+                             "subTitle": "全天佩戴 抬手就听 HEAC稳连技术",
+                             "productImageBig": "https://resource.smartisan.com/resource/367d93db1d58f9f3505bc0ec18efaa44.jpg"},
+                            {"productId": 150642571432851, "salePrice": 2699.00, "productName": "优点智能 E1 推拉式智能指纹密码锁",
+                             "subTitle": "推拉一下，轻松开关",
+                             "productImageBig": "https://resource.smartisan.com/resource/7ac3af5a92ad791c2b38bfe1e38ee334.jpg"},
+                            {"productId": 150642571432850, "salePrice": 199.00, "productName": "ACIL E1 颈挂式蓝牙耳机",
+                             "subTitle": "无感佩戴，一切变得简单",
+                             "productImageBig": "https://resource.smartisan.com/resource/406eddef8808fa5a9be9594d07ef8643.jpg"},
+                            {"productId": 150642571432849, "salePrice": 9.90, "productName": "Smartisan 明信片",
+                             "subTitle": "优质卡纸、包装精致、色彩饱满",
+                             "productImageBig": "https://resource.smartisan.com/resource/3973d009d182d8023bea6250b9a3959e.jpg"},
+                            {"productId": 150642571432848, "salePrice": 199.00, "productName": "Smartisan 牛津纺衬衫",
+                             "subTitle": "一件无拘无束的舒适衬衫",
+                             "productImageBig": "https://resource.smartisan.com/resource/a1c53b5f12dd7ef790cadec0eaeaf466.jpg"},
+                            {"productId": 150642571432847, "salePrice": 249.00, "productName": "Smartisan Polo衫 经典款",
+                             "subTitle": "一件表里如一的舒适 POLO 衫",
+                             "productImageBig": "https://resource.smartisan.com/resource/daa975651d6d700c0f886718c520ee19.jpg"},
+                            {"productId": 150642571432846, "salePrice": 149.00,
+                             "productName": "Smartisan T恤 任天堂发售“红白机”",
+                             "subTitle": "100% 美国 SUPIMA 棉、舒适拉绒质地",
+                             "productImageBig": "https://resource.smartisan.com/resource/804edf579887b3e1fae4e20a379be5b5.png"},
+                            {"productId": 150642571432845, "salePrice": 199.00, "productName": "Smartisan 帆布鞋",
+                             "subTitle": "一双踏实、舒适的帆布鞋",
+                             "productImageBig": "https://resource.smartisan.com/resource/2f9a0f5f3dedf0ed813622003f1b287b.jpg"},
+                            {"productId": 150642571432844, "salePrice": 2999.00, "productName": "畅呼吸智能空气净化器超级除甲醛版",
+                             "subTitle": "购新空净 赠价值 699 元活性炭滤芯",
+                             "productImageBig": "https://resource.smartisan.com/resource/71432ad30288fb860a4389881069b874.png"},
+                            {"productId": 150642571432843, "salePrice": 1999.00, "productName": "坚果 3",
+                             "subTitle": "漂亮得不像实力派",
+                             "productImageBig": "https://resource.smartisan.com/resource/718bcecced0df1cd23bbdb9cc1f70b7d.png"},
+                            {"productId": 150642571432842, "salePrice": 79.00, "productName": "坚果 3 \"足迹\"背贴 乐高创始人出生",
+                             "subTitle": "1891 年 4 月 7 日",
+                             "productImageBig": "https://resource.smartisan.com/resource/abb6986430536cd9365352b434f3c568.jpg"},
+                            {"productId": 150642571432841, "salePrice": 49.00, "productName": "坚果 3 TPU 软胶保护套",
+                             "subTitle": "TPU 环保材质、完美贴合、周到防护",
+                             "productImageBig": "https://resource.smartisan.com/resource/b899d9b82c4bc2710492a26af021d484.jpg"},
+                            {"productId": 150642571432840, "salePrice": 89.00, "productName": "Smartisan 半入耳式耳机",
+                             "subTitle": "经典配色、专业调音、高品质麦克风",
+                             "productImageBig": "https://resource.smartisan.com/resource/9c1d958f10a811df841298d50e1ca7c0.jpg"},
+                            {"productId": 150642571432839, "salePrice": 29.00, "productName": "坚果 3 TPU 软胶透明保护套",
+                             "subTitle": "轻薄透明、完美贴合、TPU 环保材质",
+                             "productImageBig": "https://resource.smartisan.com/resource/5e4b1feddb13639550849f12f6b2e202.jpg"},
+                            {"productId": 150642571432838, "salePrice": 79.00, "productName": "坚果 3 绒布国旗保护套",
+                             "subTitle": "质感精良、完美贴合、周到防护",
+                             "productImageBig": "https://resource.smartisan.com/resource/63ea40e5c64db1c6b1d480c48fe01272.jpg"},
+                            {"productId": 150642571432837, "salePrice": 49.00, "productName": "坚果 3 前屏钢化玻璃保护膜",
+                             "subTitle": "超强透光率、耐刮花、防指纹",
+                             "productImageBig": "https://resource.smartisan.com/resource/3a7522290397a9444d7355298248f197.jpg"},
+                            {"productId": 150642571432836, "salePrice": 149.00, "productName": "Smartisan T恤 伍迪·艾伦出生",
+                             "subTitle": "一件内外兼修的舒适T恤",
+                             "productImageBig": "https://resource.smartisan.com/resource/f96f0879768bc317b74e7cf9e3d96884.jpg"},
+                            {"productId": 816448, "salePrice": 2799.00, "productName": "极米无屏电视 CC",
+                             "subTitle": "720P 高清分辨率、JBL 音响、两万毫安续航力",
+                             "productImageBig": "http://image.smartisanos.cn/resource/41cb562a47d4831e199ed7e2057f3b61.jpg"},
+                            {"productId": 738388, "salePrice": 39.00, "productName": "Smartisan 原装 Type-C 数据线",
+                             "subTitle": "PTC 过温保护、凹形设计、TPE 环保材质",
+                             "productImageBig": "http://image.smartisanos.cn/resource/c79a73ffc6f8e782160d978f49f543dc.jpg"},
+                            {"productId": 691300, "salePrice": 199.00, "productName": "Smartisan 快充移动电源 10000mAh",
+                             "subTitle": "10000mAh 双向快充、轻盈便携、高标准安全保护",
+                             "productImageBig": "http://image.smartisanos.cn/resource/0540778097a009364f2dcbb8c5286451.jpg"}]}})
+
+
+# 进入具体某个商品的详情，需要传入参数 productId
+@app.route("/goods/productDetail")
+def product_detail():
+    print(request.args)
+    if request.args.get("productId"):
+        print(request.args.get("productId"))
+        return jsonify({"success": True, "message": "success", "code": 200, "timestamp": 1572522173985,
+                        "result": {"productId": 150642571432845, "salePrice": 199.00, "productName": "Smartisan 帆布鞋",
+                                   "subTitle": "一双踏实、舒适的帆布鞋", "limitNum": 100,
+                                   "productImageBig": "https://resource.smartisan.com/resource/2f9a0f5f3dedf0ed813622003f1b287b.jpg",
+                                   "detail": "<img src=\"https://resource.smartisan.com/resource/27a054301d8e10c40461443928dccd77.jpg\" style=\"width:1220px;height:7451px;\" alt=\"\" />",
+                                   "productImageSmall": [
+                                       "https://resource.smartisan.com/resource/2f9a0f5f3dedf0ed813622003f1b287b.jpg",
+                                       "https://resource.smartisan.com/resource/0cd8f107c70d002caf902745355e269a.jpg",
+                                       "https://resource.smartisan.com/resource/fa42dcd439e9fb990831f1d21c3f19b8.jpg"]}})
 
 
 if __name__ == "__main__":
