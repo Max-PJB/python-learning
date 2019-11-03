@@ -3,7 +3,7 @@
 """
 -------------------------------------------------
 
-    @   Author  :       pengj
+    @   Author  :       pengjb
     @   date    :       2019/11/2 14:16
     @   IDE     :       PyCharm
     @   GitHub  :       https://github.com/JackyPJB
