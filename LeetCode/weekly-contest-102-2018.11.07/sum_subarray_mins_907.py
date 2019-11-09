@@ -45,21 +45,39 @@ __author__ = 'Max_Pengjb'
 start = time.time()
 
 
-# 题目理解错误 ， 题目要求是原来list的子串，并不是随机组合，所以这里重写 sum_sub_array_min_s2
-# # 返回组合次数
-# def count_time(n):
-#     return 2 ** (n-1)
-#
-#
-# # 下面写上代码块
-# def sum_sub_array_min_s(A):
-#     A.sort(reverse=True)
-#     res = 0
-#     for i, Ai in enumerate(A):
-#         print(Ai, count_time(i+1))
-#         res = (res + count_time(i+1) * Ai) % (10 ** 9 + 7)
-#     print(res)
-#     pass
+def sum_sub_array_min_s1(A):
+    # 动态规划法
+    # dp[i][j] 表示 i - j 中间的最小值
+    # dp[i][i] = A[i]
+    # dp[i][j] = min(dp[i-1][j],A[i])
+    # dp[i][j] = min(dp[i][j-1],A[j])
+    M = 10**9 + 7
+    n = len(A)
+    q = [0 for _ in range(n)]
+    dp = [0 for _ in range(n)]
+    dp[0] = A[0]
+    for j in range(1,n):
+        if A[j] >= A[j-1]:
+            dp[j] = dp[j-1] + A[j]
+            q[j] = j
+        else:
+            i = q[j-1]
+            while i > 0 and A[j] < A[i-1]:
+                if j == 7:
+                    print("j=A[j] < A[i-1]", A[j], A[i-1])
+                i = q[i-1]
+            print(j,i)
+            if i:
+                q[j] = i
+                dp[j] = dp[i-1] + A[j] * (j-i+1)
+            else:
+                q[j] = 0
+                dp[j] = A[j] * (j+1)
+            if j == 7:
+                print("j=5,i=",i)
+    print(q)
+    print(dp)
+    return sum(dp)
 
 
 # 暴力方法
@@ -193,7 +211,8 @@ a_in2 = [29959, 29867, 29822, 29704, 29676, 29650, 29577, 29488, 29286, 29255, 2
          29123, 29221, 29239, 29274, 29347, 29493, 29596, 29668, 29694, 29717, 29847, 29871]
 # sum_sub_array_min_s2(a_in2)
 # res3 = sum_sub_array_min_s3(a_in2)
-res4 = sum_sub_array_min_s4(a_in2)
+a_in = [36,84,26,57,2,75,34,5,29,25]
+res4 = sum_sub_array_min_s1(a_in)
 # print(res3)
 print(res4)
 # 上面中间写上代码块
