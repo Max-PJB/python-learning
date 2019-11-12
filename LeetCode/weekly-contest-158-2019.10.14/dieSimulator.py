@@ -58,8 +58,28 @@ start_time = time.time()
 class Solution:
     def dieSimulator(self, n: int, rollMax: List[int]) -> int:
         # todo https://leetcode-cn.com/contest/weekly-contest-158/problems/dice-roll-simulation/
-        pass
+        # 用 dp[i][j][k] 表示第 i 轮掷骰子掷出数字 j 时 j 连续出现 k 次的组合数量。
+        dp = [[1 if j == 0 else 0 for j in range(rollMax[i])] for i in range(6)]
+        i = 1
+        M = 10**9 + 7
+        # print(dp, sum(map(sum, dp)))
+        while i < n:
+            tmp = [[0 for j in range(rollMax[i])] for i in range(6)]
+            sum_pre = sum(map(sum, dp))
+            for k in range(6):
+                for l in range(rollMax[k]):
+                    if l == 0:
+                        tmp[k][l] = sum_pre - sum(dp[k])
+                    else:
+                        tmp[k][l] = dp[k][l - 1]
+            dp = tmp
+            i += 1
+        return sum(map(sum, dp)) % M
 
+n = 20
+roll = [8,5,10,8,7,2]
+res = Solution().dieSimulator(n, roll)
+print(res)
 # 上面中间写上代码块
 end_time = time.time()
 print('Running time: %s Seconds' % (end_time - start_time))

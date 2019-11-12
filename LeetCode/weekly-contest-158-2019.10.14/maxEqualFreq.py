@@ -58,37 +58,29 @@ start_time = time.time()
 # 下面写上代码块
 class Solution:
     def maxEqualFreq(self, nums: List[int]) -> int:
-        num_count_dict = {}
-        count_dict = collections.defaultdict(int)
-        res = 1
-        for i in range(len(nums)):
-            num = nums[i]
-            print(num)
-            if num not in num_count_dict:
-                num_count_dict[num] = 1
-                count_dict[1] = count_dict[1] + 1
-            else:
-                count = num_count_dict[num]
-                num_count_dict[num] = num_count_dict[num] + 1
-                count_dict[count] = count_dict[count] - 1
-                count_dict[count + 1] = count_dict[count + 1] + 1
-            print("num_count_dict:", num_count_dict)
-            print("count_dict", count_dict)
-            print(count_dict.items())
-            haha = list(filter(lambda x: x[1] != 0, count_dict.items()))
-            print("haha",haha)
-            if len(haha) == 1 and (haha[0][1] == 1 or haha[0][0] == 1) and i >= res:
-                res = i
-            if len(haha) == 2:
-                if (1, 1) in haha:
-                    res = i
-                if haha[0][0] > haha[1][0]:
-                    h1, h2 = haha[0], haha[1]
-                else:
-                    h1, h2 = haha[1], haha[0]
-                if h1[0] - h2[0] == 1 and h1[1] == 1:
-                    res = i
-        return res+1
+        """
+        最后一题，考虑四种情况：
+            1、前缀数组中所有数字的频率只有两种，设为A和B，其中A=B+1，且只有一个数字频率为A；
+            2、前缀数组中所有数字的频率只有两种，其中只有一个数字的频率为1，其他数字的频率都大于1且相等；
+            3、整个数组的数字的频率都是1；
+            4、整个数组都是同一个数字。
+
+            对应的处理：
+            1、把前缀数组中频率为A的数字删去1个即可；
+            2、把前缀数组中频率为1的数字删去即可；
+            3、整个数组删去任意一个数字都可；
+            4、整个数组删去任意一个数字都可。
+
+            或许代码中的 fre[maxcnt]==1&&1+fre[maxcnt-1](maxcnt-1)==i+1) 比较难理解，
+            我们要先知道fre是怎么存储的，例如我们已经遍历了[5,1,1,5,5]，
+            那此时fre[1]=2（包含了1和5）,fre[2]=2（包含了1和5）,fre[3]=1（只包含5）。
+            所以上面的 1+fre[maxcnt-1](maxcnt-1)==i+1 表示为 (fre[maxcnt-1]-1)*(maxcnt-1) + (maxcnt)==i+1 即频率为B的数字总数 + 频率为A的数字总数。
+
+            作者：yang-tian-lun
+            链接：https://leetcode-cn.com/problems/maximum-equal-frequency/solution/conkao-lu-san-chong-qing-kuang-by-yang-tian-lun/
+
+        """
+
 
 
 # 上面中间写上代码块
