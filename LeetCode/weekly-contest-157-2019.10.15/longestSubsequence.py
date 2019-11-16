@@ -59,6 +59,7 @@ class Solution:
                 g[i] = 1
             else:
                 g[i] = g[i-difference] + 1
+        print(g)
         return max(g.values())
 
     def longestSubsequence2(self, arr: List[int], difference: int) -> int:
@@ -89,8 +90,8 @@ class Solution:
         return res
 
 
-arr = [1, 2, 3, 4]
-difference = 0
+arr = [1, 3, 2, 3, 4]
+difference = 1
 rrrrr = Solution().longestSubsequence(arr, difference)
 print(rrrrr)
 # 上面中间写上代码块
