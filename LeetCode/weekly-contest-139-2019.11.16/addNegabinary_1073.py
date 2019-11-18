@@ -27,9 +27,10 @@ class Solution:
             arr1, arr2 = arr2, arr1
         res = arr1[::-1]
         tmp = arr2[::-1]
-        for
         pass
 
+
+print(5 // -2, 5 % -2)
 
 # 上面中间写上代码块
 end_time = time.time()
