@@ -1,4 +1,9 @@
 flask
-flask-cors
 socketio
 Flask-SocketIO
+pyJWT
+flask_login
+flask_mongoengine
+flask-cors
+flask_security
+bcrypt
