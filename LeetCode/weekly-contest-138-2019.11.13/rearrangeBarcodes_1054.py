@@ -58,8 +58,8 @@ class Solution:
         return res
 
 
-inin = [1,2,1]
-rr = Solution().rearrangeBarcodes(inin)
+inin = [2, 2, 1, 3]
+rr = Solution().rearrangeBarcodes2(inin)
 print(rr)
 # 上面中间写上代码块
 end_time = time.time()
