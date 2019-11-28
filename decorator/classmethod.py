@@ -26,8 +26,8 @@ class Dog(object):
         self.name = name
 
     @classmethod
-    def eat(self):
-        print("%s is eating %s" % (self.name, "food"))
+    def eat(cls):
+        print("%s is eating %s" % (cls.name, "food"))
 
     def talk(self):
         print("%s is talking" % self.name)

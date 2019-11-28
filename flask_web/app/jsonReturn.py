@@ -12,21 +12,24 @@
     Description :       
 -------------------------------------------------
 """
+from flask import jsonify
 
 __author__ = 'Max_Pengjb'
 
 
-def trueReturn(data, msg):
-    return {
+def trueReturn(data, msg, token=None):
+    return jsonify({
         "status": True,
         "data": data,
-        "msg": msg
-    }
+        "msg": msg,
+        "token": token
+    })
 
 
-def falseReturn(data, msg):
-    return {
+def falseReturn(data, msg, token=None):
+    return jsonify({
         "status": False,
         "data": data,
-        "msg": msg
-    }
+        "msg": msg,
+        "token": token
+    })

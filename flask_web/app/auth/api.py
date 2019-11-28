@@ -18,10 +18,10 @@ from flask_wtf import csrf
 
 __author__ = 'Max_Pengjb'
 
-from flask import jsonify, request
-from flask_web.app.models.User import User
-from .. import commonReturn
-from .jwt import JWT
+from flask import request, g
+from flask_web.app.models.User import User, Permission
+from flask_web.app import jsonReturn
+from flask_web.app.auth.jwt import JWT
 from flask_mongoengine.wtf import model_form
 
 PostForm = model_form(User)
@@ -42,23 +42,23 @@ def init_api(app):
             print(form)
         else:
             print(form.errors)
-            print("nonono", form.username.data, form.passwd.data)
+            return jsonReturn.falseReturn('', form.errors)
         username = request.form.get('username')
         password = request.form.get('password')
-        # user = User(name=username,  passwd=User.set_passwd(User, passwd))
-        user = User(username=username)
-        # 这里要分开写，不然会报错，因为 password 是通过@property 和 @property.setter 来定义的
-        user.password = password
-        user.save()
+        if User.objects(username=username).first():
+            return jsonReturn.falseReturn('', '用户名已存在')
+        user = User.register(username, password)
+        # 这里User的password做了特别处理，需要加密保存，单独写了方法新建用户
+        # password 是通过@property 和 @property.setter 来定义的，真正的 password 是 _password
         print(user.to_mongo())
         if user.id:
             returnUser = {
                 'id': str(user.id),
                 'username': user.username
             }
-            return jsonify(commonReturn.trueReturn(returnUser, "用户注册成功"))
+            return jsonReturn.trueReturn(returnUser, "用户注册成功")
         else:
-            return jsonify(commonReturn.falseReturn('', '用户注册失败'))
+            return jsonReturn.falseReturn('', '用户注册失败')
 
     @app.route('/login', methods=['POST'])
     def login():
@@ -68,19 +68,27 @@ def init_api(app):
         """
         username = request.form.get('username')
         password = request.form.get('password')
-        if not username or not password:
-            return jsonify(commonReturn.falseReturn('', '用户名和密码不能为空'))
+        # if not username or not password:
+        if not username:
+            return jsonReturn.falseReturn('', '用户名和密码不能为空')
         else:
             userInfo = User.objects(username=username).first()
             if userInfo is None:
-                return jsonify(commonReturn.falseReturn('', '找不到用户'))
+                return jsonReturn.falseReturn('', '找不到用户')
             else:
                 if userInfo.check_password(password):
-                    token = JWT.encode_auth_token(userInfo.username)
+                    # 这里放入 g 的原因：
+                    # 1.  登录之前默认的是一个临时用户，@app.before_request 为他设置了一个 g.username='__casual_user' + str(uuid_id)
+                    # 2.  @app.after_request 会在 header 中添加 Authorization->token，
+                    # 3.  生成token需要的username通过获取 g.username 来生成token的，所以这里需要将临时用户更新为登录后的用户
+                    g.username = userInfo.username
                     # print(token,type(token))  # decode() 方法以指定的编码格式解码 bytes 对象。
-                    return jsonify(commonReturn.trueReturn(token.decode(encoding="utf-8"), '登录成功'))
+                    token = JWT.encode_auth_token(userInfo.username)
+                    # print(token)
+                    # TODO 显示的在返回的结果中也传token，为了我测试的时候用，后面需要取消，统一在headers中通过Authorization来拿
+                    return jsonReturn.trueReturn(token, '登录成功')
                 else:
-                    return jsonify(commonReturn.falseReturn('', '密码不正确'))
+                    return jsonReturn.falseReturn('', '密码不正确')
 
     @app.route('/user', methods=['GET'])
     def get():
@@ -88,8 +96,111 @@ def init_api(app):
         获取用户信息
         :return: json
         """
-        for i in dir(request):
-            print(i, "->", getattr(request, i))
+        return jsonReturn.trueReturn(g.username, '获取用户信息')
 
-        result = JWT.identify(request)
-        return jsonify(result)
+    # 访问地址的管理
+    @app.route('/admin/add_permission', methods=['POST'])
+    def add_permission():
+        """
+        访问地址的管理
+        :return: json
+        """
+        url = request.args.get('url')
+        name = request.args.get('name')
+        description = request.args.get('description')
+        if not url:
+            return jsonReturn.trueReturn('', 'url访问路径是必须的')
+        if Permission.objects(url=url).first():
+            return jsonReturn.falseReturn(url, '失败：该路径权限已经存在')
+        new_permission = Permission(url=url, name=name, description=description)
+        new_permission.save()
+        return jsonReturn.trueReturn(new_permission, '增加地址成功')
+
+    @app.route('/admin/del_permission', methods=['POST'])
+    def del_permission():
+        """
+        获取用户信息
+        :return: json
+        """
+        url = request.args.get('url')
+        target_permission = Permission.objects(url=url).first()
+        if target_permission:
+            r = target_permission.delete()
+            return jsonReturn.trueReturn(r, '删除路径权限')
+        else:
+            return jsonReturn.falseReturn('', '目标路径权限不存在')
+
+    # 角色的管理
+    @app.route('/admin/add_role', methods=['POST'])
+    def add_role():
+        """
+        获取用户信息
+        :return: json
+        """
+        url = request.args.get('url')
+        request.args.get('name')
+        request.args.get('description')
+        if not url:
+            return
+        new_permission = Permission(url='/login', name='登录', description='谁都能访问')
+        new_permission.save()
+        return jsonReturn.trueReturn(g.username, '获取用户信息')
+
+    @app.route('/admin/del_role', methods=['POST'])
+    def del_role():
+        """
+        获取用户信息
+        :return: json
+        """
+        return jsonReturn.trueReturn(g.username, '获取用户信息')
+
+    # 角色权限管理
+    @app.route('/admin/add_permission_to_role', methods=['POST'])
+    def add_permission_to_role():
+        """
+        获取用户信息
+        :return: json
+        """
+        return jsonReturn.trueReturn(g.username, '获取用户信息')
+
+    @app.route('/admin/del_permission_from_role', methods=['POST'])
+    def del_permission_from_role():
+        """
+        获取用户信息
+        :return: json
+        """
+        return jsonReturn.trueReturn(g.username, '获取用户信息')
+
+    # 用户管理
+    @app.route('/admin/add_user', methods=['POST'])
+    def add_user():
+        """
+        获取用户信息
+        :return: json
+        """
+        return jsonReturn.trueReturn(g.username, '获取用户信息')
+
+    @app.route('/admin/del_user', methods=['POST'])
+    def del_user():
+        """
+        获取用户信息
+        :return: json
+        """
+        return jsonReturn.trueReturn(g.username, '获取用户信息')
+
+    # 用户->角色管理
+    @app.route('/admin/add_role_to_user', methods=['POST'])
+    def add_role_to_user():
+        """
+        获取用户信息
+        :return: json
+        """
+        return jsonReturn.trueReturn(g.username, '获取用户信息')
+
+    @app.route('/admin/del_role_from_user', methods=['POST'])
+    def del_role_from_user():
+        """
+        获取用户信息
+        :return: json
+        """
+        return jsonReturn.trueReturn(g.username, '获取用户信息')
