@@ -17,19 +17,19 @@ from flask import jsonify
 __author__ = 'Max_Pengjb'
 
 
-def trueReturn(data, msg, token=None):
+def trueReturn(data, msg):
     return jsonify({
-        "status": True,
+        "status": "success",
+        "code": "200",
         "data": data,
         "msg": msg,
-        "token": token
     })
 
 
-def falseReturn(data, msg, token=None):
+def falseReturn(data, msg):
     return jsonify({
-        "status": False,
+        "status": "failed",
+        "code": "500",
         "data": data,
         "msg": msg,
-        "token": token
     })

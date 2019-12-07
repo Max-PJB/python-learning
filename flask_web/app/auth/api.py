@@ -14,14 +14,14 @@
 """
 import time
 
-from flask_wtf import csrf
+# from flask_wtf import csrf
 
 __author__ = 'Max_Pengjb'
 
 from flask import request, g
-from flask_web.app.models.User import User, Permission
-from flask_web.app import jsonReturn
-from flask_web.app.auth.jwt import JWT
+from app.models.User import User, Permission
+from app import jsonReturn
+from app.auth.jwt import JWT
 from flask_mongoengine.wtf import model_form
 
 PostForm = model_form(User)
@@ -34,17 +34,23 @@ def init_api(app):
         用户注册
         :return: json
         """
-        form = PostForm(request.form)
+        # form = PostForm(request.form)
         # 跨域就出现问题，我真的是服了这个 flask_mongoengine， bug是真的多
         #  解决前后端分离 'csrf_token': ['The CSRF token is missing.'] 问题
-        form.csrf_token.data = csrf.generate_csrf()
-        if form.validate():
-            print(form)
-        else:
-            print(form.errors)
-            return jsonReturn.falseReturn('', form.errors)
-        username = request.form.get('username')
-        password = request.form.get('password')
+        # TODO 不用 form 传数据，省掉这些麻烦把，直接 json ，然后还可以用 mongo 的 fromjson 的 orm
+        # form.csrf_token.data = csrf.generate_csrf()
+        # if form.validate():
+        #     print(form)
+        # else:
+        #     print(form.errors)
+        #     return jsonReturn.falseReturn('', form.errors)
+        # username = request.form.get('username')
+        # password = request.form.get('password')
+        req_json = request.json
+        username = req_json.get('username')
+        password = req_json.get('password')
+        if not username or not password:
+            return jsonReturn.falseReturn('', '用户名和密码不能为空')
         if User.objects(username=username).first():
             return jsonReturn.falseReturn('', '用户名已存在')
         user = User.register(username, password)
@@ -56,6 +62,7 @@ def init_api(app):
                 'id': str(user.id),
                 'username': user.username
             }
+            g.username = username
             return jsonReturn.trueReturn(returnUser, "用户注册成功")
         else:
             return jsonReturn.falseReturn('', '用户注册失败')
@@ -66,10 +73,10 @@ def init_api(app):
         用户登录
         :return: json
         """
-        username = request.form.get('username')
-        password = request.form.get('password')
+        username = request.json.get('username')
+        password = request.json.get('password')
         # if not username or not password:
-        if not username:
+        if not username or not password:
             return jsonReturn.falseReturn('', '用户名和密码不能为空')
         else:
             userInfo = User.objects(username=username).first()

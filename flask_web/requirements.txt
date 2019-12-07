@@ -1,0 +1,7 @@
+numpy
+pyJWT
+requests
+flask
+flask_mongoengine
+flask-cors
+bcrypt

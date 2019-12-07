@@ -17,7 +17,7 @@ __author__ = 'Max_Pengjb'
 
 import jwt
 import datetime, time
-from flask_web.config.default import Config
+from config.default import Config
 
 
 class JWT:
@@ -31,7 +31,7 @@ class JWT:
         try:
             payload = {
                 # 有效期，在exp之后的时间，token无效   jwt.ExpiredSignatureError
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=100),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=Config.EXP_SECONDS),
                 # 发布者，可有可无，表示是谁给出这个token，针对不同的 application 可以设置不同的 iss
                 # If the issuer claim is incorrect, jwt.InvalidIssuerError will be raised.
                 'iss': 'ken',

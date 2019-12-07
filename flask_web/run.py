@@ -15,12 +15,11 @@
 
 __author__ = 'Max_Pengjb'
 
-from flask_web.app import create_app
+from app import create_app
 
 app = create_app()
-
+# 在Pycharm 2018中，如果想要开启debug模式和更改端口号，则需要编辑项目配置。直接在app.run中更改是无效的。
+# https://blog.csdn.net/james_laughing/article/details/88714116
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',
-            port='5000',
-            debug=True)
+    app.run()
 

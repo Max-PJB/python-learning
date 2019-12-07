@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from flask_web.app.models import db
+from app.models import db
 
 import datetime
 
@@ -52,7 +52,6 @@ class User(db.Document):
     @staticmethod
     def register(username, password):
         new_user = User(username=username, _password=generate_password_hash(password))
-        new_user.add_role(['everyone'])
         new_user.save()
         return new_user
 
@@ -72,7 +71,7 @@ class User(db.Document):
 
 
 if __name__ == '__main__':
-    from flask_web.app.models import db
+    from app.models import db
 
     user = User("haha")
     print(user.username)
