@@ -16,7 +16,7 @@
 import time
 from typing import List
 # list_to_tree 我自己写的一个 list 转 root 的方法
-from LeetCode.utils.leetcode_list2tree import list_to_tree, TreeNode
+from LeetCode.leetcode_utils.leetcode_list2tree import list_to_tree, TreeNode
 
 __author__ = 'Max_Pengjb'
 start_time = time.time()
