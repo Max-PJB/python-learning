@@ -15,26 +15,6 @@
 
 
 # 大根堆
-class Heap2:
-    def __init__(self, h):
-        self._heap = h
-        for i in reversed(range(len(h))):
-            self._siftdown(i, len(h))
-
-    def _siftdown(self, i, n):
-        child = 2 * i + 1
-        while child < n:
-            right_child = child + 1
-            if right_child < n and self._heap[right_child] > self._heap[child]:
-                child = right_child
-            if self._heap[i] < self._heap[child]:
-                self._heap[i] = self._heap[child]
-                i = child
-                child = 2 * i + 1
-            else:
-                break
-
-
 class Heap:
     def __init__(self, array_list):
         self._heap = array_list
@@ -53,6 +33,7 @@ class Heap:
             if self._heap[child] > tmp:
                 self._heap[j] = self._heap[child]
                 j = child
+                self._heap[child] = tmp
             else:
                 break
         self._heap[j] = tmp
@@ -97,8 +78,8 @@ class Heap:
 
 if __name__ == '__main__':
     heap = Heap([1, 3, 10, 22, 4, 665, 23, 5, 77, 46])
+    # print(heap._heap)
     print(heap.get_max())
-    print(heap.get_max())
     # print(heap.get_max())
     # print(heap.get_max())
     # print(heap.get_max())
@@ -106,15 +87,21 @@ if __name__ == '__main__':
     # print(heap.get_max())
     # print(heap.get_max())
     # print(heap.get_max())
-    heap.push(2)
-    heap.push(3)
-    heap.push(4)
-    heap.push(5)
-    heap.push(6)
-    heap.push(4)
-    heap.push(3)
-    heap.push(2)
-    print(heap.get_max())
-    print(heap.get_max())
-    print(heap.get_max())
-    print(heap.get_max())
+    # print(heap.get_max())
+    # heap.push(2)
+    # heap.push(3)
+    # heap.push(4)
+    # heap.push(5)
+    # heap.push(6)
+    # heap.push(4)
+    # heap.push(3)
+    # heap.push(2)
+    # print(heap.get_max())
+    # print(heap.get_max())
+    # print(heap.get_max())
+    # print(heap.get_max())
+    import heapq
+    haha = [1, 3, 10, 22, 4, 665, 23, 5, 77, 46]
+    heapq.heapify(haha)
+    print(heapq.heappop(haha))
+    print(haha)

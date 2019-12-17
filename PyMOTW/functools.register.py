@@ -15,7 +15,6 @@
 
 __author__ = 'Max_Pengjb'
 
-
 import functools
 
 
@@ -35,7 +34,7 @@ class D(B):
     pass
 
 
-class E(D,C,A):
+class E(D, C, A):
     pass
 
 
