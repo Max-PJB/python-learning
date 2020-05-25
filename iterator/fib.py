@@ -36,7 +36,7 @@ class FibIterator:
 
 
 fib = FibIterator()
-for _ in range(2):
+for _ in range(9):
     print(next(fib))
 
 a, b, c, d, e, f = 1, 2, 3, 4, 5, 6
