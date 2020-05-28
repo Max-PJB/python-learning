@@ -76,6 +76,28 @@ def list_to_tree(S: list) -> TreeNode:
     return L[0]
 
 
+def tree_to_list(root: TreeNode) -> list:
+    """
+    :param root:TreeNode
+    :return:List
+    """
+    from queue import Queue
+    res = []
+    queue = Queue()
+    queue.put(root)
+    while not queue.empty():
+        node = queue.get()
+        if node:
+            res.append(node.val)
+            queue.put(node.left)
+            queue.put(node.right)
+        else:
+            res.append(None)
+    while res[-1] is None:
+        res.pop()
+    return res
+
+
 lis = [-27745, 27518, 54612, None, 79175, -55310, -38265, None, None, 73079, -42208, 37513, 18112, -73627, None, 91755,
        None, None, -60797, -78407, 29146, 11707, None, None, -42650, -12111, None, -36290, 82890, 60637, 51963, None,
        None, None, None, 83323, None, 78120, None, -61634, -12828, 36784, 53898, -50094, -83697, None, -89871, -28950,
@@ -86,6 +108,9 @@ lis = [-27745, 27518, 54612, None, 79175, -55310, -38265, None, None, 73079, -42
        None, -43587, -14981, None, None, 84885, 84898, None, None, -2467, -95751]
 # lis = [-27745, 27518, 54612, None, 79175, -55310, -38265]
 # t = list_to_tree(lis)
+# n = tree_to_list(t)
+# print(n)
+# print(len(n),len(lis))
 # k = bfs(t)
 # print(len(k), k)
 # kk = list(filter(lambda x: x, lis))
