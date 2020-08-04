@@ -1,3 +1,4 @@
+xmltodict
 numpy
 flask
 socketio
