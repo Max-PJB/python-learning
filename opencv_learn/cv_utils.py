@@ -23,6 +23,8 @@ import xml.etree.ElementTree as ET
 from opencv_learn.my_perspective_transform import perspective_transform
 from opencv_learn.my_flip import flip_x
 from opencv_learn.draw_boxes import draw_boxes, draw_boxes_with_labels
+from opencv_learn.my_crop_scale import crop_scale
+from opencv_learn.my_save_jpg_xml import save_jpg_xml
 
 import json
 
@@ -70,7 +72,7 @@ def get_all_xmls(folder_path: str) -> list:
     files = os.listdir(folder_path)
     for file_name in files:
         # 判断是 xml 或者是 jpg,png 等就放进去
-        if os.path.isfile(folder_path + '/' + file_name):
+        if os.path.isfile(os.path.join(folder_path, file_name)):
             _, file_type = os.path.splitext(file_name)
             if file_type in {'.xml'}:
                 xmls.append(file_name)
@@ -232,7 +234,8 @@ def parse_xml_bboxes(xml_path):
     pic_name_node = root.find('filename')
     pic_name = pic_name_node.text
     # 这里处理德江留下来的坑。
-    if file.startswith('x'):
+    _, xml_name = os.path.split(xml_path)
+    if xml_name.startswith('x') and not pic_name.startswith('x'):
         pic_name = 'x' + pic_name
     rectangles = []
     # 遍历所有 object
@@ -246,30 +249,116 @@ def parse_xml_bboxes(xml_path):
     return os.path.join(os.path.dirname(xml_path), pic_name), rectangles
 
 
-if __name__ == '__main__':
-    save_folder = './pic_classes/'
-    imgs_folder = './photo/'
+def my_augmentation(imgs_folder, save_expand, names):
+    if not os.path.exists(save_expand):
+        os.mkdir(save_expand)
+    cnt = 0  # 记录一下一起生成了多少图片
+    xml_names = []
+    for file in names:
+        print('-' * 8 + ' 进程 ' + str(os.getpid()) + ' 正在处理 ' + '-' * 2 + file + '-' * 3)
+        res_list = []
+        # rectangles ：[ [detection_type, xmin, ymin, xmax, ymax],]
+        # xml 和 jpg 必须在同级目录
+        pic_path, rectangles = parse_xml_bboxes(os.path.join(imgs_folder, file))
+        bboxes = list(map(lambda x: [x[1], x[2], x[3], x[4]], rectangles))
+        labels = list(map(lambda x: x[0], rectangles))
+        # 做一下翻转看看 flip_x 要求传入的 boxes 格式: [ [[x,y],[x,y]], [[x,y],[x,y]]……]
+        # 翻转只针对斑马线,红绿灯，如果包含 限速就不翻转了
+        no_need_flip_class_names = {"speed_limited", "speed_unlimited"}
+        CROP_NUMS = 10  # 使用 放大 裁剪 需要生成多少张图
+        if not set(labels) & no_need_flip_class_names:  # 交集为空，就说明不存在了 限速标，可以翻转
+            flip_img, flip_boxes = flip_x(pic_path, list(map(lambda x: [[x[1], x[2]], [x[3], x[4]]], rectangles)))
+            # 展示一下
+            # draw_image = draw_boxes_with_labels(flip_img, flip_boxes, labels)
+            # cv2.imshow("draw_image", draw_image)
+            # 保存,翻转不影响 labels
+            res_list.append([flip_img, flip_boxes, labels])
+            # 翻转了后，也再做一下裁剪扩充数据吧
+            flip_crop_scale_res_list = crop_scale(flip_img, flip_boxes, labels, nums=CROP_NUMS)
+            res_list.extend(flip_crop_scale_res_list)
+        # 这里做一下 放大后裁剪,返回的是 nums 个图片+bboxes+labels: 【[image,bboxes,labels],[image,bboxes,labels]……】
+        crop_scale_res_list = crop_scale(pic_path, bboxes, labels, nums=CROP_NUMS)
+        res_list.extend(crop_scale_res_list)
+        # 保存 图片 + bboxes + label 成个 jgp + xml 格式
+        for res_image, res_boxes, res_labels in res_list:
+            xml_name = save_jpg_xml(save_expand, res_image, res_boxes, res_labels)
+            xml_names.append(xml_name)
+        cnt += len(res_list)
+    return cnt, xml_names
 
+
+if __name__ == '__main__':
+    import time
+
+    start_time = time.time()
+    save_folder = './pic_classes/'
+    # imgs_folder = './photo/'
+    imgs_folder = r'D:\car_data_origin\data_7_22'
+    # imgs_folder = r'D:\car_data_origin\test'
+    # save_expand = './expand'
+    save_expand = r'D:\car_data'
+    # 引入多进程加快速度
+    from multiprocessing import cpu_count
+    from multiprocessing import Pool
+
+    CPU_COUNT = cpu_count()  # CPU内核数 本机为 6
+    pool = Pool(processes=CPU_COUNT)
     # printPath(1, './photo/')
     # print('总文件数 =', allFileNum)
     # file_names = get_all_jgp_xml_couple(imgs_folder)
     file_names = get_all_xmls(imgs_folder)
-    print(file_names)
-    for file in file_names:
+    N = len(file_names)
+    sepList = [[i * (N // CPU_COUNT), (i + 1) * (N // CPU_COUNT)] for i in range(0, CPU_COUNT)]
+    sepList[CPU_COUNT - 1][1] = N
+    print(sepList)
+
+    result = []
+    for i in range(CPU_COUNT):
+        result.append(pool.apply_async(my_augmentation,
+                                       (imgs_folder, os.path.join(save_expand, str(i)),
+                                        file_names[sepList[i][0]:sepList[i][1]])))
+    pool.close()
+    pool.join()
+    list1 = [res.get()[0] for res in result]
+    print(sum(list1), end='')  # end='' 表示取消 /n
+    """
+    cnt = 0  # 记录一下一起生成了多少图片
+    for i, file in enumerate(file_names):
+        res_list = []
         # rectangles ：[ [detection_type, xmin, ymin, xmax, ymax],]
         # xml 和 jpg 必须在同级目录
         pic_path, rectangles = parse_xml_bboxes(os.path.join(imgs_folder, file))
+        bboxes = list(map(lambda x: [x[1], x[2], x[3], x[4]], rectangles))
+        labels = list(map(lambda x: x[0], rectangles))
         # 做一下翻转看看 flip_x 要求传入的 boxes 格式: [ [[x,y],[x,y]], [[x,y],[x,y]]……]
         # 翻转只针对斑马线,红绿灯，如果包含 限速就不翻转了
-        labels = list(map(lambda x: x[0], rectangles))
-        class_names = {"speed_limited", "speed_unlimited"}
-        if not set(labels) & class_names:  # 交集为空，就说明不存在了 限速标，可以翻转
-            flip_img, boxes = flip_x(pic_path, list(map(lambda x: [[x[1], x[2]], [x[3], x[4]]], rectangles)))
-            # draw_image = draw_boxes(res_img, boxes)
-            draw_image = draw_boxes_with_labels(flip_img, boxes, labels)
-            cv2.imshow("draw_image", draw_image)
+        no_need_flip_class_names = {"speed_limited", "speed_unlimited"}
+        CROP_NUMS = 10  # 使用 放大 裁剪 需要生成多少张图
+        if not set(labels) & no_need_flip_class_names:  # 交集为空，就说明不存在了 限速标，可以翻转
+            flip_img, flip_boxes = flip_x(pic_path, list(map(lambda x: [[x[1], x[2]], [x[3], x[4]]], rectangles)))
+            # 展示一下
+            # draw_image = draw_boxes_with_labels(flip_img, flip_boxes, labels)
+            # cv2.imshow("draw_image", draw_image)
+            # 保存,翻转不影响 labels
+            res_list.append([flip_img, flip_boxes, labels])
+            # 翻转了后，也再做一下裁剪扩充数据吧
+            flip_crop_scale_res_list = crop_scale(flip_img, flip_boxes, labels, nums=CROP_NUMS)
+            res_list.extend(flip_crop_scale_res_list)
+        # 这里做一下 放大后裁剪,返回的是 nums 个图片+bboxes+labels: 【[image,bboxes,labels],[image,bboxes,labels]……】
+        crop_scale_res_list = crop_scale(pic_path, bboxes, labels, nums=CROP_NUMS)
+        res_list.extend(crop_scale_res_list)
+        # 保存 图片 + bboxes + label 成个 jgp + xml 格式
+        for res_image, res_boxes, res_labels in res_list:
+            save_jpg_xml(save_expand, res_image, res_boxes, res_labels)
+        cnt += len(res_list)
+        # for i, (res_image, res_boxes, res_labels) in enumerate(res_list):
+        #     # 显示出来看看
+        #     print('res_boxes', res_boxes)
+        #     image = draw_boxes_with_labels(res_image, res_boxes, res_labels)
+        #     cv2.imshow('after_draw_' + str(i), image)
         # 切割数据，把背景切到 pic_classes/background ，把labels 切到对应 label 名的目录pic_classes/'$label'
-        background_target_generator(pic_path, save_folder, rectangles)
+        # TODO 这个 部分先暂时不弄了 这个是准备用来抠图然后贴上去搞
+        # background_target_generator(pic_path, save_folder, rectangles)
         # 调用数据增强方法
         generator_dir = './generator'
         for folder in os.listdir(save_folder):
@@ -283,3 +372,7 @@ if __name__ == '__main__':
                     os.mkdir(label_generator_dir)
                 # augmentation(label_generator_dir, target_image_path)
     cv2.destroyAllWindows()
+    print('-' * 10 + ' done ' + '-' * 5 + ' gennerate ' + str(cnt) + ' images' + '-' * 3)
+    """
+    end_time = time.time()
+    print('Running time: %s Seconds' % (end_time - start_time))

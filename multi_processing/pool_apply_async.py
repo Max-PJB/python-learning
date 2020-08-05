@@ -48,7 +48,7 @@ def run_task(name):
 if __name__ == '__main__':
     print('current process {0}'.format(os.getpid()))
     p = multiprocessing.Pool(processes=3)
-    for i in range(6):
+    for i in range(15):
         p.apply_async(run_task, args=(i,))
     print('Waiting for all subprocesses done...')  # 这里没有等待上面的子进程，而是直接执行了，所以直接打印出来了
     p.close()

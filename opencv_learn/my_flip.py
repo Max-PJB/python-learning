@@ -25,7 +25,7 @@ def flip_x(image, boxes=None):
     """
     水平翻转
     :param image: 图片，np.array
-    :param boxes: 所有的框,[ [[x,y],[x,y]], [[x,y],[x,y]]……]
+    :param boxes: 所有的框,[ [[x,y],[x,y]], [[x,y],[x,y]]……] 或者 [ [x_min,y_min,x_max,y_max],[x_min,y_min,x_max,y_max]……]
     :return: 翻转后的图和框
     """
     if isinstance(image, str) and os.path.exists(image):
@@ -34,19 +34,31 @@ def flip_x(image, boxes=None):
     h, w = image.shape[0:2]
     res_img = image[:, ::-1]
     if boxes is not None:
-        print(boxes)
         boxes = np.array(boxes)
-        boxes = np.abs([w - 1, 0] - boxes)
+        if boxes.ndim == 3:
+            # boxes = [[[x, y], [x, y]], [[x, y], [x, y]]……]
+            boxes = np.abs([w - 1, 0] - boxes)
+            boxes = np.reshape(boxes, (-1, 4))
+        elif boxes.ndim == 2:
+            boxes = np.abs([w - 1, 0, w - 1, 0] - boxes)
+        for box in boxes:
+            if box[0] > box[2]:
+                box[0], box[2] = box[2], box[0]
+            if box[1] > box[3]:
+                box[1], box[3] = box[3], box[1]
+        # print(boxes)
     return res_img, boxes
 
 
 if __name__ == '__main__':
     from opencv_learn.draw_boxes import draw_boxes
 
+    image1 = draw_boxes('./photo/x2996.jpg', [[[0, 0], [200, 100]]])
+    cv2.imshow('before_flip', image1)
+
     image, boxes = flip_x('./photo/x2996.jpg', [[[0, 0], [200, 100]]])
-    # cv2.imshow('before_draw', image)
-    image = draw_boxes(image, boxes)
-    cv2.imshow('after_draw', image)
+    image2 = draw_boxes(image, boxes)
+    cv2.imshow('after_flip', image2)
 
     cv2.waitKey()
     cv2.destroyAllWindows()

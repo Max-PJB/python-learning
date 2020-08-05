@@ -26,6 +26,8 @@ def func1(num):
 
 
 if __name__ == "__main__":
+    # i表示int数值,主进程与子进程共享这个value。（主进程与子进程都是用的同一个value）
+    # https://blog.csdn.net/chenyulancn/article/details/77836593
     num = multiprocessing.Value("d", 10.0)  # d表示数值,主进程与子进程共享这个value。（主进程与子进程都是用的同一个value）
     print(num.value)
 
