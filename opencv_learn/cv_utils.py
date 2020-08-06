@@ -314,6 +314,7 @@ if __name__ == '__main__':
 
     result = []
     for i in range(CPU_COUNT):
+        # TODO 保存为文件的名字，我想要用共享变量来做，现在是通过不同的进行保存在不同的文件夹，有点笨，这个需要增加共享变量来处理
         result.append(pool.apply_async(my_augmentation,
                                        (imgs_folder, os.path.join(save_expand, str(i)),
                                         file_names[sepList[i][0]:sepList[i][1]])))
