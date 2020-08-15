@@ -31,6 +31,7 @@ xml_frame_str = """
         <depth>3</depth>
     </size>
     <segmented>0</segmented>
+    
 </annotation>
 """
 obj_xml_str = """
@@ -46,7 +47,8 @@ obj_xml_str = """
         <xmax>0</xmax>
         <ymax>0</ymax>
     </bndbox>
-</object>"""
+</object>
+"""
 
 
 def save_jpg_xml(save_dir, image, bboxes, labels):
@@ -83,16 +85,23 @@ def save_jpg_xml(save_dir, image, bboxes, labels):
         obj_element.find('bndbox').find('xmax').text = str(box[2])
         obj_element.find('bndbox').find('ymax').text = str(box[3])
         root.append(obj_element)
-    etree = ET.ElementTree(root)
-    etree.write(xml_path)
+    # etree = ET.ElementTree(root)
+    haha = ET.tostring(root, encoding='UTF-8')
+    # etree.write(xml_path)
+    head = b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+    print(haha)
+    with open(xml_path, 'wb') as f:
+        f.write(head)
+        f.write(haha)
     return xml_path
 
 
 if __name__ == '__main__':
-    save_expand = r'D:\car_data\0'
+    save_expand = r'D:\workspace\python-learning\opencv_learn\haha'
     # save_expand = r'D:\car_data_origin\test'
 
-    # save_jpg_xml(save_expand './photo/x2996.jpg', [[764, 190, 945, 403], [334, 578, 598, 591]], ["speed_unlimited", "pedestrian_crossing"])
+    save_jpg_xml(save_expand, './photo/x2996.jpg', [[764, 190, 945, 403], [334, 578, 598, 591]],
+                 ["speed_unlimited", "pedestrian_crossing"])
 
     # 保存了，在打开检查一下，对不对
     from opencv_learn.cv_utils import get_all_xmls, parse_xml_bboxes
