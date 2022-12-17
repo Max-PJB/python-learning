@@ -63,3 +63,22 @@ print(rr)
 # 上面中间写上代码块
 end_time = time.time()
 print('Running time: %s Seconds' % (end_time - start_time))
+
+a= __import__('build_in')
+b = __import__('build_in.heap', fromlist=(' ',))
+print(a)
+print(b)
+print(a.heap.Heap.left_child(2))
+print(b.Heap.left_child(2))
+import build_in as bi
+print(bi.heap.Heap.left_child(2))
+import importlib
+c = importlib.import_module('build_in.heap')
+print(c.Heap.left_child(2)+9)
+import pkgutil
+print(a.__path__, a.__name__)
+for p in pkgutil.walk_packages(a.__path__,a.__name__+'.'):  # 会递归
+    print(p,1)
+for p in pkgutil.iter_modules(a.__path__,a.__name__+'.'):  # 不会递归到最深层
+    print(p,2)
+    
